@@ -17,6 +17,8 @@ A modern web application built with React and Tailwind CSS that provides solutio
 
 - React.js
 - Tailwind CSS
+- Objective C
+- HTML 5
 - Framer Motion (for animations)
 - React Router (for navigation)
 - Lucide React (for icons)
