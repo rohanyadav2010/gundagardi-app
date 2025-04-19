@@ -1,0 +1,74 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  font-family: 'Poppins', system-ui, sans-serif;
+  line-height: 1.5;
+  font-weight: 400;
+  color-scheme: dark;
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.dark {
+  background-color: theme('colors.dark.bg-primary');
+  color: theme('colors.dark.text-primary');
+}
+
+.light {
+  background-color: theme('colors.gray.50');
+  color: theme('colors.gray.800');
+}
+
+body {
+  @apply min-h-screen;
+}
+
+@layer components {
+  .btn {
+    @apply py-2 px-4 font-semibold rounded-lg shadow-md focus:outline-none focus:ring-2 focus:ring-opacity-75 transition-all duration-300;
+  }
+  
+  .btn-primary {
+    @apply bg-primary-600 text-white hover:bg-primary-700 focus:ring-primary-400;
+  }
+  
+  .btn-secondary {
+    @apply bg-secondary-600 text-white hover:bg-secondary-700 focus:ring-secondary-400;
+  }
+  
+  .content-container {
+    @apply max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6;
+  }
+  
+  .card {
+    @apply dark:bg-dark-bg-secondary bg-white rounded-lg shadow-md p-6 hover:shadow-lg transition-all duration-300 dark:border-dark-bg-tertiary border-gray-200 border;
+  }
+  
+  .nav-link {
+    @apply dark:text-dark-text-secondary text-gray-600 hover:text-primary-400 transition-colors duration-200;
+  }
+
+  .page-transition {
+    @apply animate-fade-in;
+  }
+
+  .section-transition {
+    @apply animate-slide-up;
+  }
+  
+  .form-input {
+    @apply px-3 py-2 dark:bg-dark-bg-secondary bg-white border dark:border-dark-bg-tertiary border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 dark:text-dark-text-primary text-gray-800 transition-all duration-300;
+  }
+  
+  .form-label {
+    @apply block mb-2 text-sm font-medium dark:text-dark-text-secondary text-gray-700;
+  }
+
+  .icon-container {
+    @apply flex items-center justify-center w-10 h-10 rounded-full bg-primary-600 text-white shadow-md;
+  }
+}
