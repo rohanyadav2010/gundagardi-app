@@ -1,6 +1,6 @@
 # Gundagardi Literature App
 
-A modern web application built with React and Tailwind CSS that provides solutions for Hindi literature - including stories, poems, and a Hindi dictionary.
+A modern web and mobile application built with React and Tailwind CSS that provides solutions for Hindi literature - including stories, poems, and a Hindi dictionary.
 
 ## Features
 
@@ -11,26 +11,51 @@ A modern web application built with React and Tailwind CSS that provides solutio
 - **Hindi Dictionary**: Search functionality for Hindi words with meanings
 - **Copy Feature**: Easy copying of answers for educational purposes
 - **Dark/Light Mode**: Toggle between dark and light themes for comfortable reading
-- **Multi-platform Support**: Coming soon on Apple Store, Play Store, Microsoft Store, and Ubuntu Store
+- **Multi-platform Support**: Available on Web and Android, with iOS, macOS, Windows, and Linux versions coming soon
+- **Feedback System**: Integrated feedback collection with rating system and admin dashboard
+
+## Platforms
+
+### Currently Available
+- **Web Version**: Access directly through your browser
+- **Android App**: Download the APK from our website
+
+### Coming Soon
+- iOS App
+- macOS App
+- Windows App
+- Linux App
 
 ## Technologies Used
 
 - React.js
 - Tailwind CSS
-- Objective C
-- HTML 5
 - Framer Motion (for animations)
 - React Router (for navigation)
 - Lucide React (for icons)
+- SheetDB (for feedback data storage)
 
 ## Getting Started
 
-### Prerequisites
+### Web Version
+
+Visit our website to use the application directly in your browser.
+
+### Android Version
+
+1. Visit the Downloads page on our website
+2. Click the "Download for Android" button
+3. Install the APK file on your Android device
+4. Allow installation from unknown sources if prompted
+
+### Development Setup
+
+#### Prerequisites
 
 - Node.js (v14+)
 - npm or yarn
 
-### Installation
+#### Installation
 
 1. Clone the repository:
 ```bash
@@ -70,6 +95,8 @@ The build files will be generated in the `dist` directory.
 
 ```
 gundagardi-app/
+├── public/
+│   └── gundagardi-app.apk   # Android application package
 ├── src/
 │   ├── components/          # UI Components
 │   │   ├── Header.jsx       # Navigation header
@@ -82,6 +109,8 @@ gundagardi-app/
 │   │   ├── Dictionary.jsx   # Hindi dictionary component
 │   │   ├── LoginPage.jsx    # Authentication component
 │   │   ├── AppDownload.jsx  # App download information
+│   │   ├── Feedback.jsx     # User feedback component
+│   │   ├── DataLog.jsx      # Admin feedback dashboard
 │   │   └── ...              # Other components
 │   ├── App.jsx              # Main application component
 │   └── main.jsx             # Application entry point
@@ -110,6 +139,12 @@ For demo purposes, you can use the following credentials:
 - Recent searches history
 - Clean and intuitive interface
 
+### Feedback System
+- Star rating mechanism
+- Category selection for feedback type
+- Message submission with optional contact information
+- Admin dashboard for reviewing feedback
+
 ### UI/UX
 - Glassmorphism effects throughout the interface
 - Smooth animations and transitions
@@ -123,3 +158,7 @@ Current version: v2.69 Stable
 ## License
 
 This project is licensed under the MIT License - see the LICENSE file for details.
+
+## Contributors
+
+- Rohan Yadav - Lead Developer

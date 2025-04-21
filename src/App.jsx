@@ -11,23 +11,33 @@ import Dictionary from './components/Dictionary'
 import AppDownload from './components/AppDownload'
 import StoryDetail from './components/StoryDetail'
 import PoemDetail from './components/PoemDetail'
-import { MessageCircle, AlertCircle, Info, Server, Code, Globe, X, AlertTriangle, Bug, Laptop, ShieldAlert } from 'lucide-react'
+import Feedback from './components/Feedback'
+import DataLog from './components/DataLog'
+import { MessageCircle, AlertCircle, Info, Server, Code, Globe, X, AlertTriangle, Bug, Laptop, ShieldAlert, CheckCircle, DownloadCloud, Smartphone, Loader2, BookOpen, BookText, Home as HomeIcon, BookMarked, MessageSquare, Database } from 'lucide-react'
 
 // Version Notice Component
 const VersionNotice = ({ isDarkMode }) => {
-  const [isVisible, setIsVisible] = useState(true);
+  const [isVisible, setIsVisible] = useState(false);
   
   const toggleVisibility = () => {
     setIsVisible(!isVisible);
     // Store the preference in local storage
-    localStorage.setItem('hideVersionNotice', (!isVisible).toString());
+    localStorage.setItem('showVersionNotice', isVisible ? 'false' : 'true');
   };
 
-  // Check if notice was previously dismissed
+  // Check if notice should be shown
   useEffect(() => {
-    const hideNotice = localStorage.getItem('hideVersionNotice') === 'true';
-    if (hideNotice) {
+    // Clear previous localStorage value that might be causing issues
+    localStorage.removeItem('hideVersionNotice');
+    
+    // Set default to hidden
+    const showNotice = localStorage.getItem('showVersionNotice');
+    if (showNotice === 'true') {
+      setIsVisible(true);
+    } else {
       setIsVisible(false);
+      // Ensure the localStorage value is set correctly
+      localStorage.setItem('showVersionNotice', 'false');
     }
   }, []);
   
@@ -55,7 +65,7 @@ const VersionNotice = ({ isDarkMode }) => {
           <div className="flex items-center space-x-2">
             <Bug className={`flex-shrink-0 ${isDarkMode ? 'text-green-400' : 'text-green-600'}`} />
             <h3 className={`font-bold ${isDarkMode ? 'text-white' : 'text-gray-800'}`}>
-              Version 2.69 <span className="text-xs py-0.5 px-1.5 rounded bg-green-100 text-green-800">Stable</span>
+              Version 3.00 <span className="text-xs py-0.5 px-1.5 rounded bg-green-100 text-green-800">Stable</span>
             </h3>
           </div>
           <button 
@@ -278,6 +288,8 @@ function App() {
   const [themeMessage, setThemeMessage] = useState('');
   const [funnyMessage, setFunnyMessage] = useState('');
   const [isAdmin, setIsAdmin] = useState(false);
+  const [pageLoading, setPageLoading] = useState(false);
+  const [nextPageIcon, setNextPageIcon] = useState(null);
 
   // Add glassmorphism styles on mount
   useEffect(() => {
@@ -311,7 +323,7 @@ function App() {
       
       // Only set background color for login page
       if (location.pathname === '/login') {
-        document.body.style.backgroundColor = '#121212';
+        document.body.style.backgroundColor = 'transparent';
         document.body.classList.add('login-page');
       } else {
         document.body.classList.remove('login-page');
@@ -324,7 +336,7 @@ function App() {
       
       // Only set background color for login page
       if (location.pathname === '/login') {
-        document.body.style.backgroundColor = '#f9fafb';
+        document.body.style.backgroundColor = 'transparent';
         document.body.classList.add('login-page');
       } else {
         document.body.classList.remove('login-page');
@@ -452,6 +464,47 @@ function App() {
       : "bg-red-600 border border-red-400 text-white";
   };
 
+  // Get icon for current route
+  const getPageIcon = (pathname) => {
+    switch (pathname) {
+      case '/':
+        return <HomeIcon className="w-8 h-8 text-white" />;
+      case '/stories':
+        return <BookOpen className="w-8 h-8 text-white" />;
+      case '/poems':
+        return <BookMarked className="w-8 h-8 text-white" />;
+      case '/dictionary':
+        return <BookText className="w-8 h-8 text-white" />;
+      case '/app-download':
+        return <DownloadCloud className="w-8 h-8 text-white" />;
+      case '/feedback':
+        return <MessageSquare className="w-8 h-8 text-white" />;
+      case '/data-log':
+        return <Database className="w-8 h-8 text-white" />;
+      default:
+        return <HomeIcon className="w-8 h-8 text-white" />;
+    }
+  };
+
+  // Listen for route changes to show loading animations
+  useEffect(() => {
+    // Don't show animation for login page or when not logged in
+    if (location.pathname === '/login' || !isLoggedIn) return;
+    
+    // Set the icon for the page we're navigating to
+    setNextPageIcon(getPageIcon(location.pathname));
+    
+    // Show loading state
+    setPageLoading(true);
+    
+    // Simulate page loading
+    const timer = setTimeout(() => {
+      setPageLoading(false);
+    }, 800);
+    
+    return () => clearTimeout(timer);
+  }, [location.pathname, isLoggedIn]);
+
   return (
     <div className={`flex flex-col min-h-screen ${isDarkMode ? 'bg-dark-bg-primary' : 'bg-gray-50'}`}>
       {location.pathname !== '/login' && 
@@ -502,6 +555,91 @@ function App() {
         </AnimatePresence>
       </div>
       
+      {/* Login success animation - 60fps smooth animation */}
+      <AnimatePresence>
+        {isLoggedIn && location.pathname === '/' && (
+          <motion.div 
+            initial={{ opacity: 1 }}
+            animate={{ opacity: 0 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 1.5, ease: "easeOut" }}
+            className="fixed inset-0 z-50 pointer-events-none flex items-center justify-center"
+            style={{ 
+              background: isDarkMode ? 
+                'radial-gradient(circle, rgba(91,33,182,0.8) 0%, rgba(13,13,30,0) 70%)' : 
+                'radial-gradient(circle, rgba(124,58,237,0.5) 0%, rgba(255,255,255,0) 70%)'
+            }}
+          >
+            <motion.div
+              initial={{ scale: 0.7, opacity: 0 }}
+              animate={{ 
+                scale: [0.7, 1.2, 1],
+                opacity: [0, 1, 0]
+              }}
+              transition={{ 
+                duration: 1.2, 
+                ease: "easeInOut",
+                times: [0, 0.5, 1]
+              }}
+              className="flex flex-col items-center"
+            >
+              <motion.div
+                initial={{ scale: 0 }}
+                animate={{ 
+                  scale: [0, 1.3, 1],
+                  rotate: [0, 10, 0]
+                }}
+                transition={{ 
+                  duration: 0.8, 
+                  ease: "easeOut",
+                  times: [0, 0.6, 1]
+                }}
+                className={`mb-3 w-20 h-20 rounded-full flex items-center justify-center 
+                  ${isDarkMode ? 'bg-purple-600' : 'bg-purple-500'} shadow-2xl`}
+              >
+                <CheckCircle className="w-10 h-10 text-white" />
+              </motion.div>
+              <motion.div
+                initial={{ y: 20, opacity: 0 }}
+                animate={{ y: 0, opacity: 1 }}
+                transition={{ delay: 0.2, duration: 0.5 }}
+                className={`text-2xl font-bold ${isDarkMode ? 'text-white' : 'text-purple-800'}`}
+              >
+                Gundagardi Mode Activated! 
+              </motion.div>
+            </motion.div>
+            
+            {/* Particles animation for added flair */}
+            <div className="absolute inset-0 flex items-center justify-center overflow-hidden">
+              {Array.from({ length: 20 }).map((_, i) => (
+                <motion.div
+                  key={i}
+                  initial={{ 
+                    x: 0, 
+                    y: 0, 
+                    opacity: 0.8,
+                    scale: Math.random() * 0.5 + 0.5
+                  }}
+                  animate={{ 
+                    x: (Math.random() - 0.5) * window.innerWidth * 0.7, 
+                    y: (Math.random() - 0.5) * window.innerHeight * 0.7,
+                    opacity: 0,
+                    scale: Math.random() * 1.5 + 1
+                  }}
+                  transition={{ 
+                    duration: Math.random() * 1 + 0.8, 
+                    ease: "easeOut" 
+                  }}
+                  className={`absolute w-4 h-4 rounded-full ${
+                    i % 3 === 0 ? 'bg-purple-500' : i % 3 === 1 ? 'bg-pink-500' : 'bg-indigo-500'
+                  }`}
+                />
+              ))}
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+      
       <main className="flex-grow pt-20">
         <AnimatePresence mode="wait">
           <Routes location={location} key={location.pathname}>
@@ -550,11 +688,205 @@ function App() {
               </ProtectedRoute>
             } />
             
+            <Route path="/feedback" element={
+              <ProtectedRoute isLoggedIn={isLoggedIn}>
+                <Feedback isDarkMode={isDarkMode} glassmorphismClass={glassmorphismClass} isAdmin={isAdmin} />
+              </ProtectedRoute>
+            } />
+            
+            <Route path="/data-log" element={
+              <ProtectedRoute isLoggedIn={isLoggedIn}>
+                {isAdmin ? (
+                  <DataLog isDarkMode={isDarkMode} glassmorphismClass={glassmorphismClass} isAdmin={isAdmin} />
+                ) : (
+                  <Navigate to="/" replace />
+                )}
+              </ProtectedRoute>
+            } />
+            
             {/* Catch-all redirect to login */}
             <Route path="*" element={<Navigate to="/login" replace />} />
           </Routes>
         </AnimatePresence>
       </main>
+
+      {/* App Download page transition animation - 60fps smooth animation */}
+      <AnimatePresence>
+        {isLoggedIn && location.pathname === '/app-download' && (
+          <motion.div 
+            initial={{ opacity: 1 }}
+            animate={{ opacity: 0 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 1.8, ease: "easeOut" }}
+            className="fixed inset-0 z-50 pointer-events-none flex items-center justify-center"
+            style={{ 
+              background: isDarkMode ? 
+                'radial-gradient(circle, rgba(55,48,163,0.7) 0%, rgba(13,13,30,0) 70%)' : 
+                'radial-gradient(circle, rgba(79,70,229,0.4) 0%, rgba(255,255,255,0) 70%)'
+            }}
+          >
+            <motion.div
+              initial={{ scale: 0.7, opacity: 0 }}
+              animate={{ 
+                scale: [0.7, 1.2, 1],
+                opacity: [0, 1, 0]
+              }}
+              transition={{ 
+                duration: 1.5, 
+                ease: "easeInOut",
+                times: [0, 0.4, 1]
+              }}
+              className="flex flex-col items-center"
+            >
+              <motion.div
+                initial={{ scale: 0, rotate: -30 }}
+                animate={{ 
+                  scale: [0, 1.2, 1],
+                  rotate: [-30, 10, 0]
+                }}
+                transition={{ 
+                  duration: 0.9, 
+                  ease: "easeOut",
+                  times: [0, 0.6, 1]
+                }}
+                className={`mb-4 w-24 h-24 rounded-2xl flex items-center justify-center 
+                  ${isDarkMode ? 'bg-indigo-600' : 'bg-indigo-500'} shadow-2xl`}
+              >
+                <motion.div
+                  animate={{ 
+                    y: [0, -8, 0],
+                  }}
+                  transition={{ 
+                    repeat: 1,
+                    duration: 0.7, 
+                    ease: "easeInOut"
+                  }}
+                >
+                  <DownloadCloud className="w-12 h-12 text-white" />
+                </motion.div>
+              </motion.div>
+              <motion.div
+                initial={{ y: 20, opacity: 0 }}
+                animate={{ y: 0, opacity: 1 }}
+                transition={{ delay: 0.2, duration: 0.6 }}
+                className={`text-2xl font-bold ${isDarkMode ? 'text-white' : 'text-indigo-800'}`}
+              >
+                Download Experience Loaded!
+              </motion.div>
+            </motion.div>
+            
+            {/* Apps floating down animation */}
+            <div className="absolute inset-0 flex items-center justify-center overflow-hidden">
+              {Array.from({ length: 8 }).map((_, i) => (
+                <motion.div
+                  key={i}
+                  initial={{ 
+                    x: (Math.random() - 0.5) * 200, 
+                    y: -100 - Math.random() * 100, 
+                    opacity: 0,
+                    rotate: Math.random() * 20 - 10
+                  }}
+                  animate={{ 
+                    x: (Math.random() - 0.5) * 300, 
+                    y: window.innerHeight + 100,
+                    opacity: [0, 0.7, 0],
+                    rotate: [Math.random() * 20 - 10, Math.random() * 40 - 20]
+                  }}
+                  transition={{ 
+                    duration: Math.random() * 1.5 + 2, 
+                    ease: "easeIn",
+                    delay: Math.random() * 0.5
+                  }}
+                  className="absolute"
+                >
+                  <div className={`w-14 h-14 rounded-xl flex items-center justify-center shadow-lg ${
+                    i % 4 === 0 ? 'bg-indigo-500' : 
+                    i % 4 === 1 ? 'bg-blue-500' : 
+                    i % 4 === 2 ? 'bg-green-500' : 'bg-purple-500'
+                  }`}>
+                    {i % 3 === 0 ? <Smartphone className="w-8 h-8 text-white" /> : 
+                     i % 3 === 1 ? <Laptop className="w-8 h-8 text-white" /> : 
+                     <Globe className="w-8 h-8 text-white" />}
+                  </div>
+                </motion.div>
+              ))}
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+      
+      {/* Page Navigation Loading Animation */}
+      <AnimatePresence>
+        {pageLoading && isLoggedIn && location.pathname !== '/login' && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.2 }}
+            className="fixed inset-0 z-[100] backdrop-blur-sm bg-black/20 flex items-center justify-center"
+          >
+            <motion.div
+              initial={{ scale: 0.8, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 0.8, opacity: 0 }}
+              transition={{ type: "spring", stiffness: 400, damping: 30 }}
+              className={`${isDarkMode ? 'bg-gray-900/90' : 'bg-white/90'} p-8 rounded-2xl flex flex-col items-center shadow-2xl border ${isDarkMode ? 'border-gray-800' : 'border-gray-200'}`}
+            >
+              <div className="relative mb-4">
+                <motion.div
+                  className={`w-16 h-16 rounded-xl ${isDarkMode ? 'bg-indigo-600' : 'bg-indigo-500'} flex items-center justify-center`}
+                  animate={{ rotate: 360 }}
+                  transition={{ 
+                    duration: 2,
+                    ease: "linear",
+                    repeat: Infinity
+                  }}
+                >
+                  {nextPageIcon}
+                </motion.div>
+                <motion.div 
+                  className="absolute inset-0 rounded-xl"
+                  initial={{ borderWidth: 2, borderColor: "rgba(99, 102, 241, 0.2)" }}
+                  animate={{ 
+                    scale: [1, 1.2, 1],
+                    opacity: [1, 0.2, 1],
+                    borderColor: ["rgba(99, 102, 241, 0.2)", "rgba(99, 102, 241, 0.8)", "rgba(99, 102, 241, 0.2)"]
+                  }}
+                  transition={{ 
+                    duration: 1.8,
+                    ease: "easeInOut",
+                    repeat: Infinity
+                  }}
+                  style={{
+                    borderStyle: "solid"
+                  }}
+                />
+              </div>
+              <p className={`text-lg font-bold mb-1 ${isDarkMode ? 'text-white' : 'text-gray-800'}`}>
+                Gundagardi Loading...
+              </p>
+              <div className="flex items-center gap-1.5">
+                <motion.div 
+                  className={`w-2 h-2 rounded-full ${isDarkMode ? 'bg-indigo-500' : 'bg-indigo-600'}`}
+                  animate={{ scale: [1, 1.5, 1] }}
+                  transition={{ duration: 0.6, repeat: Infinity, repeatDelay: 0.2 }}
+                />
+                <motion.div 
+                  className={`w-2 h-2 rounded-full ${isDarkMode ? 'bg-pink-500' : 'bg-pink-600'}`}
+                  animate={{ scale: [1, 1.5, 1] }}
+                  transition={{ duration: 0.6, repeat: Infinity, repeatDelay: 0.3, delay: 0.1 }}
+                />
+                <motion.div 
+                  className={`w-2 h-2 rounded-full ${isDarkMode ? 'bg-purple-500' : 'bg-purple-600'}`}
+                  animate={{ scale: [1, 1.5, 1] }}
+                  transition={{ duration: 0.6, repeat: Infinity, repeatDelay: 0.4, delay: 0.2 }}
+                />
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+      
       {location.pathname !== '/login' && <Footer isDarkMode={isDarkMode} isAdmin={isAdmin} glassmorphismClass={glassmorphismClass} />}
       <TechNote isDarkMode={isDarkMode} />
       <VersionNotice isDarkMode={isDarkMode} />

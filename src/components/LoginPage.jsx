@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { User, Key, Eye, EyeOff, BookOpen, Skull, MessageCircle, DollarSign, ArrowRight, ShieldAlert, Coffee, MoonStar, Sun, Sparkles, Rocket, Laugh, Laptop } from 'lucide-react';
+import { User, Key, Eye, EyeOff, BookOpen, Skull, MessageCircle, DollarSign, ArrowRight, ShieldAlert, Coffee, MoonStar, Sun, Sparkles, Rocket, Laugh, Laptop, Loader2 } from 'lucide-react';
+import { motion } from 'framer-motion';
 
 // Simplified Motion Bubble Component
 const MotionBubble = ({ icon, text, color }) => (
@@ -20,6 +21,7 @@ const LoginPage = ({ onLogin, isDarkMode }) => {
   const [showLoginHints, setShowLoginHints] = useState(false);
   const [timeGreeting, setTimeGreeting] = useState('');
   const [currentTime, setCurrentTime] = useState(new Date());
+  const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
 
   // Ensure login page has its own background
@@ -93,22 +95,18 @@ const LoginPage = ({ onLogin, isDarkMode }) => {
       return;
     }
 
-    // Increment login attempts
-    setLoginAttempts(prev => prev + 1);
+    // Set loading state
+    setIsLoading(true);
     
-    // Show funny error for the first two attempts unless using known credentials
-    if (loginAttempts < 2 && 
-        !(username === 'admin' && password === 'admin') && 
-        !(username === 'gunda' && password === 'gundagardi')) {
-      const randomIndex = Math.floor(Math.random() * funnyErrors.length);
-      setError(funnyErrors[randomIndex]);
-      setShowFunnyError(true);
-      setTimeout(() => setShowFunnyError(false), 3000);
-      return;
-    }
-
-    // Pass credentials to parent component for authentication
-    onLogin({ username, password });
+    // Simulate network delay for login
+    setTimeout(() => {
+      // Pass credentials to parent component for authentication
+      // Always allow login as long as username and password are not empty
+      onLogin({ username, password });
+      
+      // Reset loading state (though this won't be seen as we'll navigate away)
+      setIsLoading(false);
+    }, 1200);
   };
 
   // Toggle login hints
@@ -127,11 +125,14 @@ const LoginPage = ({ onLogin, isDarkMode }) => {
 
   return (
     <div className="min-h-screen overflow-auto py-8 flex items-center justify-center">
-      {/* Custom background */}
-      <div className="fixed inset-0 z-0" style={{ 
-        background: '#0f0c29',
-        backgroundImage: 'linear-gradient(to right, #24243e, #302b63, #0f0c29)'
-      }}>
+      {/* Fixed persistent background gradients - same as Home tab */}
+      <div className="fixed inset-0 z-0 overflow-hidden pointer-events-none">
+        {/* Background gradient blobs */}
+        <div className="absolute top-[15%] left-[10%] w-[40vw] h-[40vw] rounded-full bg-purple-500/40 blur-[100px] opacity-100"></div>
+        <div className="absolute bottom-[20%] right-[15%] w-[35vw] h-[35vw] rounded-full bg-blue-500/40 blur-[100px] opacity-100"></div>
+        <div className="absolute top-[40%] right-[30%] w-[30vw] h-[30vw] rounded-full bg-pink-500/40 blur-[100px] opacity-100"></div>
+        
+        {/* Pattern overlay */}
         <div className="absolute inset-0 opacity-5" style={{ 
           backgroundImage: 'url("data:image/svg+xml,%3Csvg width=\'60\' height=\'60\' viewBox=\'0 0 60 60\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Cg fill=\'none\' fill-rule=\'evenodd\'%3E%3Cg fill=\'%23ffffff\' fill-opacity=\'0.2\'%3E%3Cpath d=\'M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z\'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")',
           backgroundSize: '40px 40px'
@@ -202,7 +203,7 @@ const LoginPage = ({ onLogin, isDarkMode }) => {
                   <div className="pl-6 space-y-1 text-xs">
                     <p><span className="font-medium">Admin:</span> username: <code className="bg-blue-900/70 px-1.5 py-0.5 rounded-md">admin</code> / password: <code className="bg-blue-900/70 px-1.5 py-0.5 rounded-md">admin</code></p>
                     <p><span className="font-medium">Student:</span> username: <code className="bg-blue-900/70 px-1.5 py-0.5 rounded-md">gunda</code> / password: <code className="bg-blue-900/70 px-1.5 py-0.5 rounded-md">gundagardi</code></p>
-                    <p className="text-blue-300/80 italic">Or use any credentials after 3 attempts for mock login</p>
+                    <p className="text-blue-300/80 italic">Or use any credentials to login directly</p>
                   </div>
                 </div>
               )}
@@ -261,10 +262,25 @@ const LoginPage = ({ onLogin, isDarkMode }) => {
                 
                 <button
                   type="submit"
-                  className="w-full bg-gradient-to-r from-purple-700/90 to-indigo-700/90 backdrop-blur-sm hover:from-purple-600/90 hover:to-indigo-600/90 text-white font-bold py-3 px-4 rounded-lg flex items-center justify-center mt-2 shadow-md transition-all duration-300 hover:shadow-lg"
+                  disabled={isLoading}
+                  className={`w-full bg-gradient-to-r from-purple-700/90 to-indigo-700/90 backdrop-blur-sm hover:from-purple-600/90 hover:to-indigo-600/90 text-white font-bold py-3 px-4 rounded-lg flex items-center justify-center mt-2 shadow-md transition-all duration-300 hover:shadow-lg ${isLoading ? 'opacity-80' : ''}`}
                 >
-                  <span className="mr-2">Ghus Ja Andar</span>
-                  <ArrowRight className="h-4 w-4" />
+                  {isLoading ? (
+                    <motion.div 
+                      className="flex items-center justify-center"
+                      initial={{ opacity: 0 }}
+                      animate={{ opacity: 1 }}
+                      transition={{ duration: 0.2 }}
+                    >
+                      <Loader2 className="h-5 w-5 mr-2 animate-spin" />
+                      <span>Ghusne Ka Prayas...</span>
+                    </motion.div>
+                  ) : (
+                    <>
+                      <span className="mr-2">Ghus Ja Andar</span>
+                      <ArrowRight className="h-4 w-4" />
+                    </>
+                  )}
                 </button>
                 
                 <div className="text-center text-gray-400 mt-2">
@@ -355,7 +371,7 @@ const LoginPage = ({ onLogin, isDarkMode }) => {
       <div className="absolute bottom-3 left-1/2 transform -translate-x-1/2 z-10 text-center">
         <div className="bg-gray-900/60 backdrop-blur-sm px-3 py-1.5 rounded-lg border border-green-700/30 shadow-md">
           <div className="flex items-center justify-center space-x-2 text-xs">
-            <span className="text-green-400 font-medium">v2.69 Stable</span>
+            <span className="text-green-400 font-medium">v3.00 Stable</span>
             <span className="h-2.5 w-px bg-gray-700"></span>
             <span className="text-white/70">First version of Gundagardi app</span>
           </div>
@@ -371,9 +387,7 @@ const LoginPage = ({ onLogin, isDarkMode }) => {
         
         /* Override body background when login page is active */
         body.login-page {
-          background: #0f0c29;
-          background: -webkit-linear-gradient(to right, #24243e, #302b63, #0f0c29);
-          background: linear-gradient(to right, #24243e, #302b63, #0f0c29);
+          background: transparent !important;
         }
       `}</style>
     </div>

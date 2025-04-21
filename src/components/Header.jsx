@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useMemo } from 'react'
 import { Link, useNavigate, useLocation } from 'react-router-dom'
 import { motion, AnimatePresence } from 'framer-motion'
 import { Menu, X, User, LogOut, Sun, Moon, Skull, ShieldCheck, Laptop } from 'lucide-react'
@@ -68,13 +68,20 @@ function Header({ isLoggedIn, userData, isDarkMode, toggleTheme, isAdmin, onLogo
     setIsMenuOpen(!isMenuOpen)
   }
 
-  const links = [
+  // Navigation links
+  const links = useMemo(() => [
     { name: 'Home', path: '/' },
     { name: 'Stories', path: '/stories' },
     { name: 'Poems', path: '/poems' },
     { name: 'Dictionary', path: '/dictionary' },
-    { name: 'App Download', path: '/app-download' }
-  ]
+    { name: 'App Download', path: '/app-download' },
+    { name: 'Feedback', path: '/feedback' }
+  ], []);
+
+  // Additional admin links
+  const adminLinks = useMemo(() => [
+    { name: 'Data Log', path: '/data-log' }
+  ], []);
 
   // Glassmorphism header background
   const headerBgClass = isDarkMode 
@@ -107,7 +114,7 @@ function Header({ isLoggedIn, userData, isDarkMode, toggleTheme, isAdmin, onLogo
             <span className={`text-xl font-bold ${textClass}`}>Gundagardi</span>
             <div className="flex items-center">
               <span className="text-xs bg-red-600/80 backdrop-blur-sm text-white px-2 py-0.5 rounded-full">House of Gundas</span>
-              <span className={`ml-1 text-xs ${isDarkMode ? 'bg-green-700/50' : 'bg-green-200/90'} ${isDarkMode ? 'text-green-300' : 'text-green-800'} px-1.5 py-0.5 rounded-full`}>v2.69</span>
+              <span className={`ml-1 text-xs ${isDarkMode ? 'bg-green-700/50' : 'bg-green-200/90'} ${isDarkMode ? 'text-green-300' : 'text-green-800'} px-1.5 py-0.5 rounded-full`}>v3.00</span>
             </div>
           </div>
           
@@ -128,11 +135,25 @@ function Header({ isLoggedIn, userData, isDarkMode, toggleTheme, isAdmin, onLogo
               className={`${secondaryTextClass} hover:text-purple-500 transition-colors duration-200 ${location.pathname === link.path ? activeNavClass : ''}`}
             >
               {link.name}
-              {(link.path === '/dictionary' || link.path === '/app-download') && (
+              {(link.path === '/dictionary' || link.path === '/app-download' || link.path === '/feedback') && (
                 <span className="ml-1 text-xs bg-yellow-500/80 backdrop-blur-sm text-white px-1.5 py-0.5 rounded-full animate-pulse">
                   New!
                 </span>
               )}
+            </Link>
+          ))}
+          
+          {/* Admin Links */}
+          {isAdmin && adminLinks.map((link) => (
+            <Link
+              key={link.path}
+              to={link.path}
+              className={`${secondaryTextClass} hover:text-purple-500 transition-colors duration-200 ${location.pathname === link.path ? activeNavClass : ''}`}
+            >
+              {link.name}
+              <span className="ml-1 text-xs bg-green-600/80 backdrop-blur-sm text-white px-1.5 py-0.5 rounded-full">
+                Admin
+              </span>
             </Link>
           ))}
           
@@ -226,7 +247,7 @@ function Header({ isLoggedIn, userData, isDarkMode, toggleTheme, isAdmin, onLogo
                     <span className={`text-xl font-bold ${textClass}`}>Gundagardi</span>
                     <div className="flex items-center">
                       <span className="text-xs bg-red-600/80 backdrop-blur-sm text-white px-2 py-0.5 rounded-full">House of Gundas</span>
-                      <span className={`ml-1 text-xs ${isDarkMode ? 'bg-green-700/50' : 'bg-green-200/90'} ${isDarkMode ? 'text-green-300' : 'text-green-800'} px-1.5 py-0.5 rounded-full`}>v2.69</span>
+                      <span className={`ml-1 text-xs ${isDarkMode ? 'bg-green-700/50' : 'bg-green-200/90'} ${isDarkMode ? 'text-green-300' : 'text-green-800'} px-1.5 py-0.5 rounded-full`}>v3.00</span>
                     </div>
                   </div>
                 </Link>
@@ -265,11 +286,26 @@ function Header({ isLoggedIn, userData, isDarkMode, toggleTheme, isAdmin, onLogo
                     onClick={() => setIsMenuOpen(false)}
                   >
                     {link.name}
-                    {(link.path === '/dictionary' || link.path === '/app-download') && (
+                    {(link.path === '/dictionary' || link.path === '/app-download' || link.path === '/feedback') && (
                       <span className="ml-1 text-xs bg-yellow-500/80 backdrop-blur-sm text-white px-1.5 py-0.5 rounded-full animate-pulse">
                         New!
                       </span>
                     )}
+                  </Link>
+                ))}
+                
+                {/* Admin Links for Mobile */}
+                {isAdmin && adminLinks.map((link) => (
+                  <Link
+                    key={link.path}
+                    to={link.path}
+                    className={`${textClass} text-lg font-medium ${location.pathname === link.path ? activeNavClass : ''} ${location.pathname === link.path ? `${isDarkMode ? 'bg-purple-900/40' : 'bg-purple-100/70'} backdrop-blur-sm px-3 py-2 rounded-lg shadow-md` : 'px-3 py-2'}`}
+                    onClick={() => setIsMenuOpen(false)}
+                  >
+                    {link.name}
+                    <span className="ml-1 text-xs bg-green-600/80 backdrop-blur-sm text-white px-1.5 py-0.5 rounded-full">
+                      Admin Only
+                    </span>
                   </Link>
                 ))}
                 
@@ -323,7 +359,7 @@ function Header({ isLoggedIn, userData, isDarkMode, toggleTheme, isAdmin, onLogo
                   </p>
                   <div className="flex items-center justify-center pt-2 border-t border-gray-700/30">
                     <span className={`text-xs px-2 py-0.5 rounded ${isDarkMode ? 'bg-green-700/30 text-green-400' : 'bg-green-100 text-green-800'}`}>
-                      v2.69 Stable
+                      v3.00 Stable
                     </span>
                     <span className="mx-2 text-xs text-gray-500">|</span>
                     <span className="text-xs italic flex items-center">

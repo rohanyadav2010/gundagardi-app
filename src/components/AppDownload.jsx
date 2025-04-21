@@ -26,14 +26,24 @@ const AppDownload = ({ isDarkMode, glassmorphismClass }) => {
   const secondaryTextClass = isDarkMode ? 'text-gray-300' : 'text-gray-700';
   const accentClass = isDarkMode ? 'text-purple-400' : 'text-purple-600';
   
-  // Platform status - only web is available currently
+  // Platform status - web and Android are available
   const platformStatus = {
     web: 'available',
     ios: 'coming-soon',
-    android: 'coming-soon',
+    android: 'available',
     macos: 'coming-soon',
     windows: 'coming-soon',
     linux: 'coming-soon'
+  };
+  
+  // Platform download URLs
+  const downloadUrls = {
+    web: '/',
+    android: '/gundagardi-app.apk',
+    ios: '',
+    macos: '',
+    windows: '',
+    linux: ''
   };
   
   // Store icons based on platform
@@ -58,15 +68,15 @@ const AppDownload = ({ isDarkMode, glassmorphismClass }) => {
   const getStoreName = (platform) => {
     switch(platform) {
       case 'ios':
-        return 'App Store';
+        return 'Gundagardi Website';
       case 'android':
-        return 'Google Play';
+        return 'Gundagardi Website';
       case 'macos':
-        return 'Mac App Store';
+        return 'Gundagardi Website';
       case 'windows':
-        return 'Microsoft Store';
+        return 'Gundagardi Website';
       case 'linux':
-        return 'Ubuntu Store';
+        return 'Gundagardi Website';
       default:
         return 'Web Version';
     }
@@ -135,6 +145,7 @@ const AppDownload = ({ isDarkMode, glassmorphismClass }) => {
     const isAvailable = platform.status === 'available';
     const storeName = getStoreName(platform.id);
     const storeIcon = getStoreIcon(platform.id);
+    const downloadUrl = downloadUrls[platform.id];
     
     return (
       <motion.div
@@ -180,11 +191,14 @@ const AppDownload = ({ isDarkMode, glassmorphismClass }) => {
         <div className="mt-4">
           {isAvailable ? (
             <a 
-              href="/" 
+              href={downloadUrl} 
               className={`flex items-center justify-center py-2 px-4 rounded-lg ${platform.textColor} bg-opacity-20 font-medium hover:bg-opacity-30 transition-all ${isDarkMode ? 'bg-black/20 hover:bg-black/30' : 'bg-white/60 hover:bg-white/80'}`}
+              target={platform.id !== 'web' ? "_blank" : ""}
+              rel={platform.id !== 'web' ? "noopener noreferrer" : ""}
+              download={platform.id === 'android' ? "Gundagardi.apk" : ""}
             >
               <DownloadCloud className="w-4 h-4 mr-2" /> 
-              Use Web Version
+              {platform.id === 'web' ? 'Use Web Version' : `Download for ${platform.name}`}
             </a>
           ) : (
             <button 
@@ -333,17 +347,17 @@ const AppDownload = ({ isDarkMode, glassmorphismClass }) => {
             <p className={`${secondaryTextClass}`}>Initial release of the web application with core functionality. <span className="text-green-500 font-medium">Available Now!</span></p>
           </div>
           
-          <div className={`relative pl-8 pb-4 border-l-2 ${isDarkMode ? 'border-gray-700' : 'border-gray-300'}`}>
-            <div className={`absolute left-[-9px] top-0 w-4 h-4 rounded-full ${isDarkMode ? 'bg-gray-700' : 'border-2 border-gray-400 bg-white'}`}></div>
-            <h3 className={`text-lg font-semibold ${textClass}`}>Q3 2025: Mobile Applications</h3>
+          <div className={`relative pl-8 pb-4 border-l-2 ${isDarkMode ? 'border-green-600' : 'border-green-500'}`}>
+            <div className={`absolute left-[-9px] top-0 w-4 h-4 rounded-full ${isDarkMode ? 'bg-green-600' : 'bg-green-500'}`}></div>
+            <h3 className={`text-lg font-semibold ${textClass}`}>Q3 2025: Android Application</h3>
             <p className={`${secondaryTextClass}`}>
-              Release of iOS and Android applications with offline functionality and mobile-optimized interface.
+              Release of Android application with online functionality and mobile-optimized interface. <span className="text-green-500 font-medium">Available Now!</span>
               <div className="mt-2 flex flex-wrap gap-2">
-                <div className={`flex items-center text-xs px-2 py-1 rounded-full ${isDarkMode ? 'bg-blue-900/30 text-blue-400' : 'bg-blue-100 text-blue-700'}`}>
-                  <Apple className="w-3 h-3 mr-1" /> App Store
+                <div className={`flex items-center text-xs px-2 py-1 rounded-full ${isDarkMode ? 'bg-green-900/50 text-green-400' : 'bg-green-100 text-green-700'}`}>
+                  <ShoppingBag className="w-3 h-3 mr-1" /> Android APK
                 </div>
-                <div className={`flex items-center text-xs px-2 py-1 rounded-full ${isDarkMode ? 'bg-green-900/30 text-green-400' : 'bg-green-100 text-green-700'}`}>
-                  <ShoppingBag className="w-3 h-3 mr-1" /> Google Play
+                <div className={`flex items-center text-xs px-2 py-1 rounded-full ${isDarkMode ? 'bg-blue-900/30 text-blue-400' : 'bg-blue-100 text-blue-700'}`}>
+                  <Apple className="w-3 h-3 mr-1" /> iOS Coming Soon
                 </div>
               </div>
             </p>
@@ -351,12 +365,12 @@ const AppDownload = ({ isDarkMode, glassmorphismClass }) => {
           
           <div className={`relative pl-8 pb-4 border-l-2 ${isDarkMode ? 'border-gray-700' : 'border-gray-300'}`}>
             <div className={`absolute left-[-9px] top-0 w-4 h-4 rounded-full ${isDarkMode ? 'bg-gray-700' : 'border-2 border-gray-400 bg-white'}`}></div>
-            <h3 className={`text-lg font-semibold ${textClass}`}>Q4 2025: Desktop Applications</h3>
+            <h3 className={`text-lg font-semibold ${textClass}`}>Q4 2025: iOS & Desktop Applications</h3>
             <p className={`${secondaryTextClass}`}>
-              Release of macOS, Windows, and Linux desktop applications with enhanced features and full offline support.
+              Release of iOS, macOS, Windows, and Linux desktop applications with enhanced features and full offline support.
               <div className="mt-2 flex flex-wrap gap-2">
                 <div className={`flex items-center text-xs px-2 py-1 rounded-full ${isDarkMode ? 'bg-gray-800/40 text-gray-400' : 'bg-gray-100 text-gray-700'}`}>
-                  <Apple className="w-3 h-3 mr-1" /> Mac App Store
+                  <Apple className="w-3 h-3 mr-1" /> iOS & Mac
                 </div>
                 <div className={`flex items-center text-xs px-2 py-1 rounded-full ${isDarkMode ? 'bg-blue-900/30 text-blue-400' : 'bg-blue-100 text-blue-700'}`}>
                   <Store className="w-3 h-3 mr-1" /> Microsoft Store
@@ -399,31 +413,48 @@ const AppDownload = ({ isDarkMode, glassmorphismClass }) => {
             Start using Gundagardi today!
           </h2>
           <p className={`text-lg mb-6 ${secondaryTextClass} max-w-2xl mx-auto`}>
-            Access the web version now and be the first to know when we launch on App Store, Google Play, Microsoft Store, and Ubuntu Store!
+            Access the web version now or download the Android app! More platforms coming soon.
           </p>
-          <motion.a
-            href="/"
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
-            className={`inline-flex items-center px-6 py-3 rounded-lg font-medium ${isDarkMode ? 'bg-purple-700 hover:bg-purple-600 text-white' : 'bg-purple-600 hover:bg-purple-700 text-white'} shadow-lg`}
-          >
-            <Globe className="w-5 h-5 mr-2" />
-            Open Web Version
-            <ChevronRight className="w-5 h-5 ml-1" />
-          </motion.a>
+          
+          <div className="flex flex-wrap justify-center gap-4 mb-6">
+            <motion.a
+              href="/"
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+              className={`inline-flex items-center px-6 py-3 rounded-lg font-medium ${isDarkMode ? 'bg-purple-700 hover:bg-purple-600 text-white' : 'bg-purple-600 hover:bg-purple-700 text-white'} shadow-lg`}
+            >
+              <Globe className="w-5 h-5 mr-2" />
+              Open Web Version
+              <ChevronRight className="w-5 h-5 ml-1" />
+            </motion.a>
+            
+            <motion.a
+              href={downloadUrls.android}
+              target="_blank"
+              rel="noopener noreferrer"
+              download="Gundagardi.apk"
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+              className={`inline-flex items-center px-6 py-3 rounded-lg font-medium ${isDarkMode ? 'bg-green-700 hover:bg-green-600 text-white' : 'bg-green-600 hover:bg-green-700 text-white'} shadow-lg`}
+            >
+              <Smartphone className="w-5 h-5 mr-2" />
+              Download for Android
+              <ChevronRight className="w-5 h-5 ml-1" />
+            </motion.a>
+          </div>
           
           <div className="mt-6 flex justify-center flex-wrap gap-3">
-            <div className={`flex items-center text-sm ${isDarkMode ? 'bg-blue-900/30 text-blue-400' : 'bg-blue-100 text-blue-700'} px-3 py-1 rounded-full`}>
-              <Apple className="w-4 h-4 mr-1" /> Coming to App Store
-            </div>
             <div className={`flex items-center text-sm ${isDarkMode ? 'bg-green-900/30 text-green-400' : 'bg-green-100 text-green-700'} px-3 py-1 rounded-full`}>
-              <ShoppingBag className="w-4 h-4 mr-1" /> Coming to Google Play
+              <ShoppingBag className="w-4 h-4 mr-1" /> Android Available
             </div>
             <div className={`flex items-center text-sm ${isDarkMode ? 'bg-blue-900/30 text-blue-400' : 'bg-blue-100 text-blue-700'} px-3 py-1 rounded-full`}>
-              <Store className="w-4 h-4 mr-1" /> Coming to Microsoft Store
+              <Apple className="w-4 h-4 mr-1" /> Coming to Gundagardi Website
+            </div>
+            <div className={`flex items-center text-sm ${isDarkMode ? 'bg-blue-900/30 text-blue-400' : 'bg-blue-100 text-blue-700'} px-3 py-1 rounded-full`}>
+              <Store className="w-4 h-4 mr-1" /> Coming to Gundagardi Website
             </div>
             <div className={`flex items-center text-sm ${isDarkMode ? 'bg-orange-900/30 text-orange-400' : 'bg-orange-100 text-orange-700'} px-3 py-1 rounded-full`}>
-              <Package className="w-4 h-4 mr-1" /> Coming to Ubuntu Store
+              <Package className="w-4 h-4 mr-1" /> Coming to Gundagardi Website
             </div>
           </div>
           

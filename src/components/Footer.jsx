@@ -158,7 +158,7 @@ function Footer({ isDarkMode }) {
       <div className={`py-4 ${bgClass} border-t ${borderClass}`}>
         <div className="content-container">
           <p className={`text-center text-sm ${textClass}`}>
-            &copy; {currentYear} Gundagardi - Passing ICSE Hindi since 2023. Made with 
+            &copy; {currentYear} Gundagardi - Passing ICSE Hindi since 500 BCE. Made with 
             <Heart className="w-4 h-4 inline mx-1 text-red-500 fill-current" /> and 
             <Coffee className="w-4 h-4 inline mx-1 text-amber-700" />
           </p>
@@ -167,7 +167,7 @@ function Footer({ isDarkMode }) {
               <span className="bg-yellow-100 text-yellow-800 px-2 py-0.5 rounded text-xs">Chetavni:</span> Agar fail ho gaye to humari zimmedari nahi hai!
             </p>
             <span className={`ml-3 text-xs py-0.5 px-2 rounded ${isDarkMode ? 'bg-green-700/30 text-green-400' : 'bg-green-100 text-green-800'}`}>
-              v2.69 Stable
+              v3.00 Stable
             </span>
           </div>
           <p className={`text-center text-xs mt-2 ${textClass} italic`}>
