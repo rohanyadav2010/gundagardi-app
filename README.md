@@ -153,7 +153,7 @@ For demo purposes, you can use the following credentials:
 
 ## Version Information
 
-Current version: v2.69 Stable
+Current version: v3.00 Stable
 
 ## License
 
